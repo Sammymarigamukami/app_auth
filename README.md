@@ -252,7 +252,86 @@ USE auth_app;
 ```bash
 npm run dev
 ```
-### 7. Security Notes
+## Login & Oauth Entry Points
+### 1. Email & Password Register
+**Endpoint**
+```bash
+POST /api/user/register
+```
+**Body**
+```json
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+```
+**What happens**
+- Credentials are verified
+- JWT + refresh token cookies are issued
+- User is redirected or response is returned(depending on your implementation)
+
+### 2. Email & Password Register
+**Endpoint**
+```bash
+POST /api/user/login
+```
+**Body**
+```json
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+```
+**What happens**
+- Credentials are verified
+- JWT + refresh token cookies are issued
+- User is redirected or response is returned(depending on your implementation)
+
+### 3. GitHub OAuth Login
+**Visit in browser**
+```bash
+http://localhost:4000/auth/github
+```
+**Flow**
+1. Backend redirects user to GitHub OAuth
+2. User signs in with GitHub
+3. Google redirects back to:
+```bash
+http://localhost:4000/auth/github/callback
+```
+4. Backend
+   - verifies `state`
+   - create or finds user
+   - sets JWT + refresh token cookies
+   - redirects user to:
+```bash
+http://localhost:3000/dashboard
+```
+**You never visit the callback URL manually**
+
+### 4. Google OAuth Login
+**Visit in browser**
+```bash
+http://localhost:4000/auth/google
+```
+**Flow**
+1. Backend redirects user to Google OAuth
+2. User signs in with Google
+3. Google redirects back to:
+```bash
+http://localhost:4000/auth/google/callback
+```
+4. Backend
+   - verifies `state`
+   - create or finds user
+   - sets JWT + refresh token cookies
+   - redirects user to:
+```bash
+http://localhost:3000/dashboard
+```
+**Again, callback routes are not user-facing**
+
+### 6. Security Notes
 - Tokens stored as HTTP-only cookies
 - Password hashed ( `bcrypt` )
 - Short-lived access tokens
